@@ -57,7 +57,7 @@ fun! akm#move_to_end()
     if m =~# '\v^i'
         return getline('.')[col('.')-1:] =~ '\v^\s+$' ? "\<end>": "\<esc>g_a"
     endif
-    if m =~? '\v^(n|v)'
+    if m =~? '\v^(n|v)' || m == "\<c-v>"
         return getline('.')[col('.'):] =~ '\v^\s+$' ? '$': 'g_'
     endif
     return ''
