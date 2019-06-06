@@ -23,6 +23,20 @@ fun! akm#exec(cmd)
     exe a:cmd | return ''
 endf
 
+" Execute a command asynchronously
+fun! akm#async_exec(cmd)
+    call timer_start(0, {t->execute(a:cmd)})
+    return "\<F13>"
+endf
+
+" Call a function asynchronously
+fun! akm#async_call(fun, ...)
+    let Fun = type(a:fun) == v:t_string ? function(a:fun): a:fun
+    call assert_true(type(Fun) == v:t_func, 'The first arg must be a function')
+    call timer_start(0, {t->call(Fun, a:000)})
+    return "\<F13>"
+endf
+
 " Auto redraw like emacs's Ctrl-L
 fun! akm#auto_redraw()
     let l = winline()
