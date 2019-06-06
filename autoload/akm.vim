@@ -32,7 +32,7 @@ endf
 " Call a function asynchronously
 fun! akm#async_call(fun, ...)
     let Fun = function(a:fun, a:000)
-    call timer_start(0, {t->call(Fun, a:000)})
+    call timer_start(0, {t->Fun()})
     return "\<F13>"
 endf
 
