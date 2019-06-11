@@ -19,21 +19,32 @@ fun! akm#feedkeys(...)
 endf
 
 " Execute a command and return ''
-fun! akm#exec(cmd)
-    exe a:cmd | return ''
+fun! akm#exec(cmd, ...)
+    let sync = a:0 ? a:1 : 0
+    if sync
+        exe a:cmd | return ''
+    else
+        call timer_start(0, {t->execute(a:cmd)})
+        return akm#nop()
+    end
 endf
 
-" Execute a command asynchronously
-fun! akm#async_exec(cmd)
-    call timer_start(0, {t->execute(a:cmd)})
-    return "\<F13>"
+fun! akm#nop()
+    let ch = "\<F13>"
+    if mode() =~ '[Ric].\?'
+        let ch = "\<c-r>\<esc>"
+    elseif mode() =~ 'n.\?'
+        let ch = "\<esc>"
+    endif
+    redraw
+    call feedkeys(ch, 'n') | return ''
 endf
 
 " Call a function asynchronously
-fun! akm#async_call(fun, ...)
+fun! akm#call(fun, ...)
     let Fun = function(a:fun, a:000)
     call timer_start(0, {t->Fun()})
-    return "\<F13>"
+    return akm#nop()
 endf
 
 " Auto redraw like emacs's Ctrl-L
